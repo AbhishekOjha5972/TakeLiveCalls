@@ -5,12 +5,20 @@ const mongoose = require("mongoose")
  * This schema will help for creating the events 
  */
 const eventSchema = new mongoose.Schema({
-    nameOfEvent: { type: String, required: true },
-    shortDescription: { type: String, required: true },
-    startTime: { type: String, required: true },
-    endTime: { type: String, required: true },
-    limit: { type: Boolean, required: true },
-    accepted: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }]
+    ownerID:
+        { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    nameOfEvent:
+        { type: String, required: true },
+    shortDescription:
+        { type: String, required: true },
+    startTime:
+        { type: Date, required: true },
+    endTime:
+        { type: Date, required: true },
+    limit:
+        { type: Number, required: true },
+    accepted:
+        [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }]
 }, { versionKey: false, timestamps: true })
 
 /**
@@ -24,7 +32,7 @@ const appliedEvents = new mongoose.Schema({
     userID:
         { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     status:
-        { type: String, enum: ["accepted", "pending", "rejected"] }
+        { type: String, enum: ["accepted", "pending", "rejected"], default: "pending" }
 }, { versionKey: false, timestamps: true })
 
 
