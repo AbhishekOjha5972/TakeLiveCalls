@@ -48,7 +48,7 @@ const login = async (req, res) => {
               process.env.secretKey,
               { expiresIn: "2h" }
             );
-            res.status(200).json({ message: "login successful", token })
+            res.status(200).json({ message: "login successful", user:{token,name:user[0].username}})
           }
           else {
             res.status(200).json({ message: "wrong password" })

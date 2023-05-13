@@ -17,6 +17,10 @@ const eventSchema = new mongoose.Schema({
         { type: Date, required: true },
     limit:
         { type: Number, required: true },
+    state:
+        { type: String, required: true },
+    country:
+        { type: String, required: true },
     accepted:
         [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }]
 }, { versionKey: false, timestamps: true })

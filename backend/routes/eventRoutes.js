@@ -9,4 +9,5 @@ eventRouter.post("/",postEventController)
 eventRouter.post("/partiallyjoined/:Id",joinIntoTheEventPartiallyController)
 eventRouter.patch("/join/:Id",joinUserIntoTheEventController)
 
+
 module.exports = {eventRouter}

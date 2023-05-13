@@ -5,14 +5,44 @@ const { EventModel, AppliedEventModel } = require("../model/eventModels")
  * This controller will give you the all the available Events.
  */
 const getEventController = async (req, res) => {
+    const { state, country, q ,limit} = req.query
+    const text = req.query.q || ""
+
+    console.log('text:', text)
+    const filters = {};
+
+    if (state) {
+        filters.state = state;
+    }
+    if (limit) {
+        filters.limit = limit;
+    }
+
+    if (country) {
+        filters.country = country;
+    }
+
+    if (q) {
+        filters.$or = [
+            { nameOfEvent: { $regex: text, $options: "i" } },
+            { shortDescription: { $regex: text, $options: "i" } }
+        ];
+    }
+    console.log("filters",filters)
     try {
-        let data = await EventModel.find();
+        let data = await EventModel.find(filters)
+            .populate({
+                path: "accepted",
+                select: "-password"
+            }).exec();
+
         res.status(200).json({ message: "success", data })
     }
     catch (err) {
         res.status(500).json({ message: "something went wrong", error: err.message })
     }
 }
+
 
 /**
  * This controller is using for craete the new events.
@@ -34,12 +64,10 @@ const postEventController = async (req, res) => {
  */
 
 const joinIntoTheEventPartiallyController = async (req, res) => {
-
     let appliedEventObject = {
         eventID: req.params.Id,
         userID: req.headers.userId
     }
-    console.log('appliedEventObject:', appliedEventObject)
 
     try {
         let PartiallyJoinedEvent = new AppliedEventModel(appliedEventObject);
@@ -59,25 +87,27 @@ const joinIntoTheEventPartiallyController = async (req, res) => {
  */
 
 const joinUserIntoTheEventController = async (req, res) => {
-    const {haveToAddIntoTheEvent,status} = req.body;
-    console.log('status:', status)
+    const { haveToAddIntoTheEvent, status } = req.body;
     try {
-        let event = await EventModel.findOne({_id:req.params.Id,ownerID:req.headers.userId})
-        
-        let appliedEvent = await AppliedEventModel.findOne({eventID:req.params.Id,userID:haveToAddIntoTheEvent})
-        
-        let val = event.accepted.map(ele=>ele!==haveToAddIntoTheEvent)
-        if(status=="accepted") appliedEvent[0].status = "accepted"
-        else appliedEvent[0].status = "rejected"
-        
-        console.log('val:', val)
-        if(!val.length){
-            event.accepted.push(haveToAddIntoTheEvent)
-            await appliedEvent.save()
-            await event.save()
-            res.status(200).json({ message: "success" })
-        }else{
-            res.status(200).json({ message: "you are already in the event." }) 
+        let event = await EventModel.findOne({ _id: req.params.Id, ownerID: req.headers.userId })
+
+        let appliedEvent = await AppliedEventModel.findOne({ eventID: req.params.Id, userID: haveToAddIntoTheEvent })
+        if (appliedEvent) {
+            let val = event.accepted.filter(ele => ele == haveToAddIntoTheEvent)
+            if (status == "accepted") appliedEvent.status = "accepted"
+            else appliedEvent.status = "rejected"
+
+            if (!val.length) {
+                event.accepted.push(haveToAddIntoTheEvent)
+                await appliedEvent.save()
+                await event.save()
+                res.status(200).json({ message: "success" })
+            } else {
+                res.status(200).json({ message: "you are already in the event." })
+            }
+        }
+        else {
+            res.status(200).json({ message: "you didn't apply any event yet please enrolled first." })
         }
     }
     catch (err) {
@@ -85,4 +115,4 @@ const joinUserIntoTheEventController = async (req, res) => {
     }
 }
 
-module.exports = { getEventController, postEventController, joinIntoTheEventPartiallyController, joinUserIntoTheEventController}
+module.exports = { getEventController, postEventController, joinIntoTheEventPartiallyController, joinUserIntoTheEventController} 
