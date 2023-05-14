@@ -5,7 +5,7 @@ const { EventModel, AppliedEventModel } = require("../model/eventModels")
  * This controller will give you the all the available Events.
  */
 const getEventController = async (req, res) => {
-    const { state, country, q ,limit} = req.query
+    const { state, country, q, limit } = req.query
     const text = req.query.q || ""
 
     console.log('text:', text)
@@ -28,7 +28,6 @@ const getEventController = async (req, res) => {
             { shortDescription: { $regex: text, $options: "i" } }
         ];
     }
-    console.log("filters",filters)
     try {
         let data = await EventModel.find(filters)
             .populate({
@@ -43,7 +42,27 @@ const getEventController = async (req, res) => {
     }
 }
 
+const getSpecificEventController = async (req, res) => {
+    try {
+        let event = await EventModel.findById(req.params.Id).populate("ownerID", "-password").populate("accepted", "-password").exec()
+        res.status(200).json({ message: "success", data: event })
+    }
+    catch (err) {
+        res.status(500).json({ message: "something went wrong", error: err.message })
+    }
+}
 
+
+const getUsersAllEventController = async (req, res) => {
+    console.log('res:', res)
+    try {
+        let event = await EventModel.find({})
+        res.status(200).json({ message: "success", data: event })
+    }
+    catch (err) {
+        res.status(500).json({ message: "something went wrong", error: err.message })
+    }
+}
 /**
  * This controller is using for craete the new events.
  */
@@ -115,4 +134,24 @@ const joinUserIntoTheEventController = async (req, res) => {
     }
 }
 
-module.exports = { getEventController, postEventController, joinIntoTheEventPartiallyController, joinUserIntoTheEventController} 
+/**
+ * GET ALL THE FILTER OPTIONS DYNAMICALLY FOR COUNTRIES & STATES
+ * */
+const getOptions = async (req, res) => {
+    try {
+        const countries = await EventModel.aggregate([{ $group: { _id: null, countries: { $addToSet: '$country' } } }]);
+        const states = await EventModel.aggregate([{ $group: { _id: null, states: { $addToSet: '$state' } } }]);
+        res.status(200).send({ message: 'success', data: { countries: countries[0].countries, states: states[0].states } });
+    } catch (error) {
+        console.log('error:', error)
+        res.status(500).send({
+            message: "Internal serr error!",
+            error: error.message
+        });
+    }
+}
+
+
+
+
+module.exports = { getUsersAllEventController, getSpecificEventController, getOptions, getEventController, postEventController, joinIntoTheEventPartiallyController, joinUserIntoTheEventController } 

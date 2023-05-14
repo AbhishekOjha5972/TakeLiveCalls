@@ -3,9 +3,12 @@ const { takeLiveCallsDB } = require("./config/db")
 const { userRouter } = require("./routes/userRoutes")
 const { eventRouter } = require("./routes/eventRoutes")
 const tokenValidator = require("./middlewares/tokenValidator")
+const cors = require("cors")
 require('dotenv').config()
 const app = express()
 app.use(express.json())
+app.use(cors())
+
 
 app.use("/users",userRouter)
 app.use(tokenValidator)
