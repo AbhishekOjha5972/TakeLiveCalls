@@ -1,9 +1,10 @@
-import { EVENT_ERROR, EVENT_LOADING, EVENT_SUCCESS } from "./event.types"
+import { EVENT_ERROR, EVENT_LOADING, EVENT_OPTIONS_SUCCESS, EVENT_SUCCESS } from "./event.types"
 
 let initialState = {
     loading: false,
     error: false,
-    events: []
+    events: [],
+    options: {}
 }
 
 export const eventReducer = (state = initialState, action) => {
@@ -21,6 +22,10 @@ export const eventReducer = (state = initialState, action) => {
         case EVENT_SUCCESS:
             {
                 return { ...state, loading: false, error: false, events: payload }
+            }
+        case EVENT_OPTIONS_SUCCESS:
+            {
+                return { ...state, loading: false, error: false, options: payload }
             }
         default:
             {

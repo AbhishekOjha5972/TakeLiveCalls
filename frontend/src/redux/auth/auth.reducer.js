@@ -1,4 +1,4 @@
-import { AUTH_ERROR, AUTH_LOADING, AUTH_SUCCESS } from "./auth.types"
+import { AUTH_ERROR, AUTH_LOADING, AUTH_SIGNUP_SUCCESS, AUTH_SUCCESS } from "./auth.types"
 
 let initialState = {
     loading: false,
@@ -21,6 +21,10 @@ export const authenticationReducer = (state = initialState, action) => {
         case AUTH_SUCCESS:
             {
                 return { ...state, loading: false, error: false, user: payload }
+            }
+        case AUTH_SIGNUP_SUCCESS:
+            {
+                return {...state,loading:false,error:false}
             }
         default:
             {

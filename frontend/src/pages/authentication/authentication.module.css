@@ -4,7 +4,6 @@
     --transparent: rgb(255, 255, 255, 0.3);
     font-family: 'Source Sans Pro', sans-serif;
     background-color: #EEEEEE;
-
 }
 
 * {
@@ -28,12 +27,13 @@
     text-align: center;
 }
 
-input{
+.form > input {
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 14px;
     margin: 10px 0;
     height: 40px;
-    width: 296px;
+    /* width: 296px; */
+    border-radius: 5px;
     border: none;
     border-bottom: 1px solid var(--accent);
     background-color: transparent;
@@ -42,19 +42,21 @@ input{
     padding: 5px;
 }
 
-a {
+.form>span {
     background: var(--color1);
+    display: inline-block;
+    align-items: center;
     color: #EEEEEE;
     text-decoration: none;
-    padding: 12px 0;
-    margin: 20px 0 10px 0;
+    padding: 5px 0;
     text-align: center;
+    margin: 10px 0px;
     border-radius: 30px;
     transition: 0.4s;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
 }
 
-a:hover {
+.form>span:hover {
     transform: translatey(2px);
     box-shadow: none;
 }
@@ -75,15 +77,33 @@ img:hover {
     transform: scale(1.1);
     cursor: pointer;
 }
-p{
+
+p {
     cursor: pointer;
 }
+
 .auth_container {
     height: 100vh;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.loading_stage {
+    display: inline-block;
+    animation: animName 0.5s linear infinite !important;
+    box-shadow: none;
+    color: #EEEEEE;
+    background: none;
+    margin: 0;
+}
+
+.non_loading_stage{
+    box-shadow: none;
+    color: #EEEEEE;
+    background: none;
+    margin: 0;
 }
 
 .circle {
@@ -120,4 +140,14 @@ p{
     border-radius: 50%;
     transform: translate(-250px, 50px);
     z-index: -1;
+}
+
+@keyframes animName {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

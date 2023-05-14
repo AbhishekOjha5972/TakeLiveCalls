@@ -1,0 +1,13 @@
+:root {
+    --accent: #FFA500;
+    --color1: linear-gradient(to bottom right, #FFA500, #FF5F1F);
+    --transparent: rgb(255, 255, 255, 0.3);
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: #EEEEEE;
+    --text-color1: #FC5B5E;
+    --text-color2: #475682;
+
+    --primary-heading-fontsize-large: 35px
+    --primary-heading-fontsize-medium: 30px
+    --primary-heading-fontsize-small: 25px
+}

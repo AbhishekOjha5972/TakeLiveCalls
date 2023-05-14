@@ -1,12 +1,13 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useToggle from '../../customHooks/CustomToggler'
 import Styles from "./authentication.module.css"
-import { useRef } from 'react';
-import { signupAction } from '../../redux/auth/auth.actions';
+import { useRef, useState } from 'react';
+import { loginAction, signupAction } from '../../redux/auth/auth.actions';
 import { useNavigate } from 'react-router-dom';
 
 const Authentication = () => {
   const [isToggle, toggle] = useToggle();
+  const { loading } = useSelector((store) => store.masterAuthentication)
   const dispatch = useDispatch();
   const usernameRef = useRef(null)
   const passwordRef = useRef(null)
@@ -24,9 +25,9 @@ const Authentication = () => {
   const handleSignin = () => {
     let obj = {
       username: usernameRef.current.value,
-      passwordRef: passwordRef.current.value
+      password: passwordRef.current.value
     }
-    dispatch(signupAction(obj, navigate))
+    dispatch(loginAction(obj, navigate))
   }
 
   return (
@@ -38,7 +39,9 @@ const Authentication = () => {
         <input ref={usernameRef} type="email" placeholder="Your username" />
         <input type="password" ref={passwordRef} placeholder="Your password" />
         {
-          isToggle ? <a href="#" type="button" onClick={handleSignup}>Sign up</a> : <a href="#" type="button" onClick={handleSignin}>Sign in</a>
+          isToggle ? <span type="button" onClick={handleSignup}>Sign <span className={loading ? Styles.loading_stage : Styles.non_loading_stage}>up</span></span>
+            :
+            <span type="button" onClick={handleSignin}>Sign <span className={loading ? Styles.loading_stage : Styles.non_loading_stage}>in</span></span>
         }
         <p onClick={toggle}>{isToggle ? "or sign in with" : "or sign up with"}</p>
 
