@@ -14,7 +14,7 @@ function Modal(props) {
 
     return (
         <div>
-            <button onClick={handleOpen}>➕</button>
+            <button  className={Styles.modal_close_btn} onClick={handleOpen}>➕</button>
             {isOpen && (
                 <div className={Styles.modal_overlay}  onClick={handleClose}>
                     <div className={Styles.modal} onClick={(e) =>e.stopPropagation()}>

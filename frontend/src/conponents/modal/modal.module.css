@@ -29,3 +29,11 @@
     border: none;
     padding: 5px;
 }
+.modal_close_btn{
+    display: inline-block;
+    height: 100%;
+    width: 50px;
+    background-color: var(--accent);
+    border: none;
+    border-radius: 5px;
+}
