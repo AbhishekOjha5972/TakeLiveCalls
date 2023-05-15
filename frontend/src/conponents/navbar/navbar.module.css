@@ -17,6 +17,7 @@
     background-color: var(--transparent);
     backdrop-filter: blur(10px);
     border: 2px solid var(--transparent);
+    z-index: 10;
 }
 
 .logo_container {

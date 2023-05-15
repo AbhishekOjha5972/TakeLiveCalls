@@ -1,6 +1,7 @@
 :root {
     --accent: #FFA500;
     --color1: linear-gradient(to bottom right, #FFA500, #FF5F1F);
+    --color2: linear-gradient(to bottom right, #ffa60052, #ff5f1f86);
     --transparent: rgb(255, 255, 255, 0.3);
     font-family: 'Source Sans Pro', sans-serif;
     background-color: #EEEEEE;

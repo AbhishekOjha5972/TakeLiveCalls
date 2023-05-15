@@ -1,5 +1,9 @@
-import React from 'react'
+import {useDispatch} from "react-redux"
+import { postEventAction } from "../../redux/events/event.actions"
+
+
 const FormComponent = () => {
+    const dispatch = useDispatch()
 
     const handleCreateEvent = (e) => {
         e.preventDefault()
@@ -14,7 +18,8 @@ const FormComponent = () => {
             "country":form.country.value,
             "state":form.state.value
         }
-        console.log("obj:",obj)
+        dispatch(postEventAction(obj))
+        alert("New Event Added.")
     }
 
     return (
@@ -37,7 +42,7 @@ const FormComponent = () => {
             </div>
             <div className='std-label-input'>
                 <label className='std-label'>Limit</label>
-                <input className='std-input' type='text' id='limit'  required/>
+                <input className='std-input' type='number' id='limit'  required/>
             </div>
             <div className='std-label-input'>
                 <label className='std-label'>State</label>

@@ -12,6 +12,8 @@
     background-color: var(--transparent);
     backdrop-filter: blur(20px);
     border: 2px solid var(--transparent);
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .event_component_container>div:nth-child(1) {
@@ -46,6 +48,50 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+
+
+/* Secondary conditinal element css */
+.pending_requests_container{
+    padding: 0px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.pending_requests_container > h3{
+    padding: 5px 0px;
+    color: var(--accent);
+}
+.pending_requests_items{
+    display: flex;
+    width: 400px;
+    /* background-color: var(--transparent); */
+    padding: 10px;
+    border: 2px solid var(--transparent);
+    border-radius: 10px solid var(--transparent);
+    align-items: center;
+    
+}
+.pending_requests_items > div{
+    flex: 1;
+}
+.pending_requests_items > div:nth-child(2){
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.pending_requests_items > div:nth-child(2) > button:nth-child(1){
+    background-color: rgb(2, 194, 2);
+    border: none;
+    padding: 8px 10px;
+    border-radius: 5px;
+}
+.pending_requests_items > div:nth-child(2) > button:nth-child(2){
+    background-color: red;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 5px;
 }
 
   

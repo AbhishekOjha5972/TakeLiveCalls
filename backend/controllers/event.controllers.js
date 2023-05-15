@@ -5,42 +5,54 @@ const { EventModel, AppliedEventModel } = require("../model/eventModels")
  * This controller will give you the all the available Events.
  */
 const getEventController = async (req, res) => {
-    const { state, country, q, limit } = req.query
-    const text = req.query.q || ""
+    // Destructure the query parameters from the request
+    const { state, country, q, limit } = req.query;
+    const text = req.query.q || "";
 
-    console.log('text:', text)
+    // Initialize an empty object to hold the filters
     const filters = {};
 
+    // Apply the state filter if provided
     if (state) {
         filters.state = state;
     }
+
+    // Apply the limit filter if provided
     if (limit) {
         filters.limit = limit;
     }
 
+    // Apply the country filter if provided
     if (country) {
         filters.country = country;
     }
 
+    // Apply the text search filter if provided
     if (q) {
         filters.$or = [
             { nameOfEvent: { $regex: text, $options: "i" } },
             { shortDescription: { $regex: text, $options: "i" } }
         ];
     }
+
     try {
+        // Retrieve events from the EventModel collection based on the filters
         let data = await EventModel.find(filters)
             .populate({
                 path: "accepted",
                 select: "-password"
             }).exec();
 
-        res.status(200).json({ message: "success", data })
+        // Send a successful response with the retrieved data
+        res.status(200).json({ message: "success", data });
     }
     catch (err) {
-        res.status(500).json({ message: "something went wrong", error: err.message })
+        // Send a 500 Internal Server Error response if an error occurs
+        res.status(500).json({ message: "something went wrong", error: err.message });
     }
 }
+
+
 
 const getSpecificEventController = async (req, res) => {
     try {
@@ -54,9 +66,30 @@ const getSpecificEventController = async (req, res) => {
 
 
 const getUsersAllEventController = async (req, res) => {
-    console.log('res:', res)
+
     try {
-        let event = await EventModel.find({})
+        let event = await EventModel.find({ ownerID: req.headers.userId })
+        res.status(200).json({ message: "success", data: event })
+    }
+    catch (err) {
+        res.status(500).json({ message: "something went wrong", error: err.message })
+    }
+}
+
+const getPendingRequestsAppliedEventController = async (req, res) => {
+    try {
+        let event = await AppliedEventModel.find({ eventID: req.params.Id,status:"pending" }).populate("userID", "-password")
+        res.status(200).json({ message: "success", data: event })
+    }
+    catch (err) {
+        res.status(500).json({ message: "something went wrong", error: err.message })
+    }
+}
+
+
+const getPendingRequestsOfLoggedInUserEventController = async (req, res) => {
+    try {
+        let event = await AppliedEventModel.find({ userID: req.headers.userId}).populate("userID", "-password").populate("eventID")
         res.status(200).json({ message: "success", data: event })
     }
     catch (err) {
@@ -87,11 +120,16 @@ const joinIntoTheEventPartiallyController = async (req, res) => {
         eventID: req.params.Id,
         userID: req.headers.userId
     }
-
     try {
-        let PartiallyJoinedEvent = new AppliedEventModel(appliedEventObject);
-        await PartiallyJoinedEvent.save();
-        res.status(200).json({ message: "success" })
+        let check = await AppliedEventModel.find(appliedEventObject)
+        if (!check.length) {
+            let PartiallyJoinedEvent = new AppliedEventModel(appliedEventObject);
+            await PartiallyJoinedEvent.save();
+            res.status(200).json({ message: "success" })
+        }
+        else {
+            res.status(200).json({ message: "you already applied for this event." })
+        }
     }
     catch (err) {
         res.status(500).json({ message: "something went wrong", error: err.message })
@@ -117,7 +155,9 @@ const joinUserIntoTheEventController = async (req, res) => {
             else appliedEvent.status = "rejected"
 
             if (!val.length) {
-                event.accepted.push(haveToAddIntoTheEvent)
+                if (status == "accepted") {
+                    event.accepted.push(haveToAddIntoTheEvent)
+                }
                 await appliedEvent.save()
                 await event.save()
                 res.status(200).json({ message: "success" })
@@ -139,13 +179,19 @@ const joinUserIntoTheEventController = async (req, res) => {
  * */
 const getOptions = async (req, res) => {
     try {
+        // Retrieve a list of unique countries from the EventModel collection
         const countries = await EventModel.aggregate([{ $group: { _id: null, countries: { $addToSet: '$country' } } }]);
+        
+        // Retrieve a list of unique states from the EventModel collection
         const states = await EventModel.aggregate([{ $group: { _id: null, states: { $addToSet: '$state' } } }]);
+        
+        // Send a successful response with the retrieved countries and states
         res.status(200).send({ message: 'success', data: { countries: countries[0].countries, states: states[0].states } });
     } catch (error) {
-        console.log('error:', error)
+        // Log the error and send a 500 Internal Server Error response
+        console.log('error:', error);
         res.status(500).send({
-            message: "Internal serr error!",
+            message: "Internal server error!",
             error: error.message
         });
     }
@@ -154,4 +200,15 @@ const getOptions = async (req, res) => {
 
 
 
-module.exports = { getUsersAllEventController, getSpecificEventController, getOptions, getEventController, postEventController, joinIntoTheEventPartiallyController, joinUserIntoTheEventController } 
+
+module.exports = {
+    getUsersAllEventController,
+    getSpecificEventController,
+    getOptions,
+    getEventController,
+    postEventController,
+    joinIntoTheEventPartiallyController,
+    joinUserIntoTheEventController,
+    getPendingRequestsAppliedEventController,
+    getPendingRequestsOfLoggedInUserEventController
+} 

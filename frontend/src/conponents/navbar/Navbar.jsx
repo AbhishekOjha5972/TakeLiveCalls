@@ -5,10 +5,9 @@ import {RxAvatar} from "react-icons/rx"
 import { useSelector } from 'react-redux'
 const Navbar = () => {
     const {user} = useSelector((store)=>store.masterAuthentication)
-    console.log('user:', user)
     return (
         <nav className={Styles.navbar_container}>
-            <Link className={Styles.logo_container}>
+            <Link to="/" className={Styles.logo_container}>
                 <img src={"live_call_talk_logo.png"} />
                 <span>Take Live Calls</span>
             </Link>

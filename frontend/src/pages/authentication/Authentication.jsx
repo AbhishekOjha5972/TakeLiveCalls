@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import useToggle from '../../customHooks/CustomToggler'
 import Styles from "./authentication.module.css"
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { loginAction, signupAction } from '../../redux/auth/auth.actions';
 import { useNavigate } from 'react-router-dom';
 
