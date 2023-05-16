@@ -29,7 +29,7 @@ Take Live Calls is an online game event organizer that allows users to create an
 
 ## Technologies Used
 
-- Frontend: HTML, CSS, JavaScript
+- Frontend: React.js, Redux, HTML, CSS, JavaScript
 - Backend: Node.js, Express.js
 - Database: MongoDB
 
